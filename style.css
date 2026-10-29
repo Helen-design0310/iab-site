@@ -1,0 +1,395 @@
+/* ===== Фирменные цвета (только эти) ===== */
+:root {
+  --bg-dark: #222222;
+  --bg-light: #FFF8F3;
+  --text: #222222;
+  --text-muted: #6B6B6B;
+
+  /* Размеры текста: точки 375 → 1440 → 2560, в формуле есть rem */
+  --fs-h1: clamp(2.125rem, 1.553rem + 2.441vw, 5.3125rem);
+  --fs-sub: clamp(1.25rem, 1.074rem + 0.751vw, 2.25rem);
+  --fs-text: clamp(1rem, 0.956rem + 0.188vw, 1.25rem);
+  --fs-small: clamp(0.875rem, 0.853rem + 0.094vw, 1rem);
+
+  /* Отступы */
+  --gutter: clamp(1.25rem, 0.606rem + 2.746vw, 5rem);
+  --gap: clamp(1.25rem, 0.8rem + 1.9vw, 2.5rem);
+  --pad-card: clamp(1.25rem, 1rem + 1vw, 2.5rem);
+
+  --font-head: "Noto Serif KR", Georgia, "Times New Roman", serif;
+  --font-body: "Inter", system-ui, sans-serif;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html { -webkit-text-size-adjust: 100%; }
+
+body {
+  margin: 0;
+  background: var(--bg-light);
+  color: var(--text);
+  font-family: var(--font-body);
+  font-size: var(--fs-text);
+  line-height: 1.4;
+}
+
+img { display: block; max-width: 100%; }
+a { color: inherit; }
+
+/* ===== Первый экран: высота по содержимому ===== */
+.hero {
+  max-width: 2400px;
+  margin: 0 auto;
+  padding: var(--gap) var(--gutter);
+}
+
+.hero__inner {
+  display: grid;
+  gap: var(--gap);
+  /* Телефон: одна колонка */
+  grid-template-columns: 1fr 1fr;
+  grid-template-areas:
+    "nav    phone"
+    "title  title"
+    "photo  photo"
+    "arrow  arrow"
+    "offer  offer"
+    "logo   logo";
+  align-items: start;
+}
+
+.nav    { grid-area: nav; position: relative; z-index: 2; }
+.hero__phone { grid-area: phone; }
+.slider { grid-area: photo; }
+.arrow  { grid-area: arrow; }
+.hero__title { grid-area: title; }
+.offer  { grid-area: offer; }
+.logo   { grid-area: logo; }
+
+/* ===== Меню ===== */
+.nav__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  font-size: var(--fs-small);
+  line-height: 1.6;
+}
+
+.nav__list a {
+  display: inline-block;
+  text-decoration: none;
+}
+
+.nav__list a:hover { color: var(--text-muted); }
+
+/* Бургер (узкие экраны) */
+.nav__burger {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 6px;
+  width: 3rem;
+  height: 3rem;
+  padding: 0 0.75rem;
+  background: none;
+  border: 1px solid var(--bg-dark);
+  cursor: pointer;
+  color: var(--text);
+}
+
+.nav__burger span {
+  display: block;
+  height: 1.5px;
+  background: currentColor;
+  transition: transform 0.25s ease, opacity 0.25s ease;
+}
+
+.nav__burger[aria-expanded="true"] span:nth-child(1) { transform: translateY(7.5px) rotate(45deg); }
+.nav__burger[aria-expanded="true"] span:nth-child(2) { opacity: 0; }
+.nav__burger[aria-expanded="true"] span:nth-child(3) { transform: translateY(-7.5px) rotate(-45deg); }
+
+/* Выпадающий список меню */
+.nav__list {
+  position: absolute;
+  top: calc(100% + 0.5rem);
+  left: 0;
+  min-width: 14rem;
+  padding: var(--pad-card);
+  background: var(--bg-light);
+  border: 1px solid var(--bg-dark);
+  font-size: var(--fs-text);
+  visibility: hidden;
+  opacity: 0;
+  transition: opacity 0.2s ease, visibility 0.2s ease;
+}
+
+.nav__list.is-open { visibility: visible; opacity: 1; }
+
+.nav__list a { padding: 0.5rem 0; min-height: 44px; }
+
+/* ===== Телефон ===== */
+.hero__phone {
+  justify-self: end;
+  align-self: center;
+  font-size: var(--fs-small);
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+/* ===== Заголовок ===== */
+.hero__title {
+  margin: 0;
+  font-family: var(--font-head);
+  font-weight: 400;
+  font-size: var(--fs-h1);
+  line-height: 1.05;
+}
+
+/* ===== Слайдер: пропорция 5:7, картинки не искажаются ===== */
+.slider {
+  position: relative;
+  width: 100%;
+  max-width: 34rem;
+  aspect-ratio: 5 / 7;
+  overflow: hidden;
+  justify-self: center;
+  background: var(--text-muted);
+}
+
+.slider__img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+
+.slider__img.is-active { opacity: 1; }
+
+/* ===== Стрелка ===== */
+.arrow {
+  justify-self: end;
+  display: grid;
+  place-items: center;
+  width: 3.25rem;
+  height: 3.25rem;
+  padding: 0;
+  background: none;
+  color: var(--text);
+  border: 1px solid var(--bg-dark);
+  border-radius: 50%;
+  cursor: pointer;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.arrow:hover { background: var(--bg-dark); color: var(--bg-light); }
+
+.arrow:focus-visible,
+.nav__burger:focus-visible,
+.btn:focus-visible,
+.nav__list a:focus-visible {
+  outline: 2px solid var(--bg-dark);
+  outline-offset: 3px;
+}
+
+/* ===== Предложение ===== */
+.offer__subtitle {
+  margin: 0;
+  font-family: var(--font-head);
+  font-size: var(--fs-sub);
+  line-height: 1.2;
+}
+
+.offer__text {
+  /* Одинаковый отступ сверху и снизу: текст по центру между подзаголовком и кнопками */
+  margin: clamp(1rem, 0.7rem + 1vw, 1.75rem) 0;
+  max-width: 65ch;
+  color: var(--text-muted);
+  font-size: var(--fs-small);
+  line-height: 1.3;
+}
+
+.offer__buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 3rem;
+  padding: 0.5rem clamp(1.25rem, 1rem + 1vw, 2.5rem);
+  border: 1px solid var(--bg-dark);
+  font-size: var(--fs-small);
+  font-weight: 500;
+  text-decoration: none;
+  text-align: center;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.btn--dark { background: var(--bg-dark); color: var(--bg-light); }
+.btn--dark:hover { background: var(--text-muted); border-color: var(--text-muted); }
+.btn--line { background: transparent; color: var(--text); }
+.btn--line:hover { background: var(--bg-dark); color: var(--bg-light); }
+
+/* ===== Логотип ===== */
+.logo img { width: clamp(11rem, 9.5rem + 3vw, 17rem); height: auto; }
+
+/* ===== Планшет: текст слева, фото справа ===== */
+@media (min-width: 768px) {
+  .hero__inner {
+    grid-template-areas:
+      "nav   phone"
+      "title photo"
+      "offer photo"
+      "logo  arrow";
+    align-items: start;
+  }
+
+  .slider { justify-self: stretch; max-width: none; }
+  .offer__buttons { flex-direction: row; flex-wrap: wrap; }
+}
+
+/* ===== Десктоп: три колонки, меню списком ===== */
+@media (min-width: 1100px) {
+  .hero {
+    /* Ширина фото; высота = 1.4 ширины, отступы сверху и снизу ≈ 5% высоты экрана */
+    /* Фото целиком влезает по высоте экрана: 100vh минус отступы 40px сверху и снизу */
+    --pad-y: 2.5rem;
+    --photo-w: min(36vw, calc((100vh - 2 * var(--pad-y)) * 0.714), 52rem);
+    padding-block: var(--pad-y);
+  }
+
+  .hero__inner {
+    /* Центральная колонка = ширина фото */
+    grid-template-columns: 1fr var(--photo-w) 1fr;
+    grid-template-rows: auto 1fr auto;
+    grid-template-areas:
+      "nav   photo phone"
+      "title photo arrow"
+      "logo  photo offer";
+    column-gap: 1rem; /* заголовок рядом с фото: 16px */
+    align-items: stretch;
+  }
+
+  .nav__burger { display: none; }
+
+  .nav__list {
+    position: static;
+    min-width: 0;
+    padding: 0;
+    background: none;
+    border: 0;
+    font-size: var(--fs-small);
+    visibility: visible;
+    opacity: 1;
+  }
+
+  .nav__list a { min-height: 0; padding: 0; }
+
+  .slider { width: 100%; align-self: start; }
+
+  /* H1 прижат к фото слева */
+  .hero__title { align-self: center; justify-self: end; }
+  .hero__phone { align-self: start; }
+  .arrow { justify-self: start; align-self: center; margin-left: clamp(1rem, 0.4rem + 1.6vw, 3rem); }
+  .logo  { align-self: end; }
+  .offer { align-self: end; margin-left: clamp(1rem, 0.4rem + 1.6vw, 3rem); }
+  /* Кнопки в один ряд */
+  .offer__buttons { flex-wrap: nowrap; }
+  .btn { padding-inline: clamp(0.75rem, 0.4rem + 1vw, 2rem); white-space: nowrap; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * { transition: none !important; }
+}
+
+/* ===== Экран загрузки ===== */
+html.is-loading { overflow: hidden; }
+
+.pre {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  background: var(--bg-light);
+  /* Сам слой исчезает после ухода шторки */
+  transition: visibility 0s linear 0s;
+}
+
+.pre.is-done { visibility: hidden; }
+
+/* Тонкие вертикальные линии: две по краям, одна по центру */
+.pre__line {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  background: var(--bg-dark);
+  transform-origin: top;
+  transform: scaleY(0);
+  animation: pre-line 0.9s cubic-bezier(0.65, 0, 0.35, 1) forwards;
+  transition: opacity 0.4s ease;
+}
+
+.pre__line--left   { left: var(--gutter); }
+.pre__line--right  { right: var(--gutter); animation-delay: 0.15s; }
+.pre__line--center { left: 50%; animation-delay: 0.3s; }
+
+/* Круг с логотипом закрывает центральную линию */
+.pre__circle {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  display: grid;
+  place-items: center;
+  width: clamp(8rem, 6rem + 8vw, 12rem);
+  aspect-ratio: 1;
+  margin: calc(clamp(8rem, 6rem + 8vw, 12rem) / -2) 0 0 calc(clamp(8rem, 6rem + 8vw, 12rem) / -2);
+  background: var(--bg-light);
+  border: 1px solid var(--bg-dark);
+  border-radius: 50%;
+  opacity: 0;
+  animation: pre-fade 0.7s ease 0.8s forwards;
+  transition: opacity 0.4s ease;
+}
+
+.pre__logo {
+  width: 55%;
+  height: auto;
+}
+
+/* Шторка: раскрывается от центра на всю ширину, затем уходит вверх */
+.pre__curtain {
+  position: absolute;
+  inset: 0;
+  background: var(--bg-dark);
+  clip-path: inset(0 50% 0 50%);
+  transition: clip-path 0.8s cubic-bezier(0.65, 0, 0.35, 1);
+}
+
+/* Этап 1: линии и круг гаснут, шторка раскрывается */
+.pre.is-leaving .pre__line,
+.pre.is-leaving .pre__circle { opacity: 0; animation: none; transform: scaleY(1); }
+.pre.is-leaving .pre__circle { transform: none; }
+.pre.is-leaving .pre__curtain { clip-path: inset(0 0 0 0); }
+
+/* Этап 2: шторка уходит вверх, открывая сайт */
+.pre.is-opening { background: transparent; }
+.pre.is-opening .pre__curtain { clip-path: inset(0 0 100% 0); }
+
+@keyframes pre-line { to { transform: scaleY(1); } }
+@keyframes pre-fade { to { opacity: 1; } }
+
+/* Без анимации: просто плавное исчезновение */
+@media (prefers-reduced-motion: reduce) {
+  .pre__line { animation: none; transform: none; }
+  .pre__circle { animation: none; opacity: 1; }
+  .pre__curtain { display: none; }
+  .pre { transition: opacity 0.4s ease; }
+  .pre.is-leaving { opacity: 0; }
+  .pre.is-opening { background: var(--bg-light); }
+}

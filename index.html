@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="ru" class="is-loading">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ИАБ — дизайн и ремонт</title>
+  <meta name="description" content="Дизайн и ремонт отелей, бутиков и ресторанов любой сложности и со сдачей ремонта в надзорные органы.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&family=Noto+Serif+KR:wght@400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <noscript><style>.pre { display: none; } html.is-loading { overflow: auto; }</style></noscript>
+</head>
+<body>
+
+  <!-- Экран загрузки -->
+  <div class="pre" aria-hidden="true">
+    <span class="pre__line pre__line--left"></span>
+    <span class="pre__line pre__line--center"></span>
+    <span class="pre__line pre__line--right"></span>
+    <div class="pre__circle">
+      <img class="pre__logo" src="img/logo-mark.png" width="103" height="51" alt="">
+    </div>
+    <!-- Тёмная шторка: раскрывается от центра, потом уходит вверх -->
+    <div class="pre__curtain"></div>
+  </div>
+
+  <!-- Первый экран -->
+  <header class="hero">
+    <div class="hero__inner">
+
+      <!-- Меню: на десктопе список, на узких экранах бургер -->
+      <nav class="nav" aria-label="Основное меню">
+        <button class="nav__burger" type="button" aria-expanded="false" aria-controls="menu" aria-label="Открыть меню">
+          <span></span><span></span><span></span>
+        </button>
+        <ul class="nav__list" id="menu">
+          <li><a href="#works">Наши работы</a></li>
+          <li><a href="#contacts">Контакты</a></li>
+          <li><a href="#tariffs">Тарифы</a></li>
+          <li><a href="#reviews">Отзывы</a></li>
+        </ul>
+      </nav>
+
+      <a class="hero__phone" href="tel:+79523487071">8 952 348-70-71</a>
+
+      <h1 class="hero__title">Дизайн и&nbsp;ремонт</h1>
+
+      <!-- Слайдер: пропорции 5:7 как у серого прямоугольника в макете -->
+      <div class="slider" aria-roledescription="карусель" aria-label="Наши работы">
+        <img class="slider__img is-active" src="img/work-1.jpg" width="411" height="500" alt="Ресторан с высокими окнами и мягкими креслами">
+        <img class="slider__img" src="img/work-2.jpg" width="416" height="501" alt="Арт-инсталляция с глазом и сухоцветами" loading="lazy">
+        <img class="slider__img" src="img/work-3.jpg" width="410" height="500" alt="Зал ресторана со светлой мебелью и подвесной скульптурой" loading="lazy">
+        <img class="slider__img" src="img/work-4.jpg" width="412" height="496" alt="Длинный деревянный стол у каменного камина" loading="lazy">
+        <img class="slider__img" src="img/work-5.jpg" width="408" height="501" alt="Бутик с лестницей и рядом одежды" loading="lazy">
+      </div>
+
+      <button class="arrow" type="button" aria-label="Следующее фото">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M4 12h16M14 6l6 6-6 6"/>
+        </svg>
+      </button>
+
+      <div class="offer">
+        <p class="offer__subtitle">отелей, бутиков<br>и ресторанов</p>
+        <p class="offer__text">любой сложности и&nbsp;со&nbsp;сдачей<br>ремонта в&nbsp;надзорные органы</p>
+        <div class="offer__buttons">
+          <a class="btn btn--dark" href="#project">Обсудить проект</a>
+          <a class="btn btn--line" href="#estimate">Вызвать сметчика</a>
+        </div>
+      </div>
+
+      <div class="logo">
+        <img src="img/logo.png" width="229" height="51" alt="ИАБ — интерьер атмосферного бизнеса">
+      </div>
+
+    </div>
+  </header>
+
+  <script src="script.js"></script>
+</body>
+</html>
