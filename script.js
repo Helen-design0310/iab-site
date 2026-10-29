@@ -39,14 +39,16 @@
 
 // Слайдер: стрелка переключает фото по кругу
 const slides = document.querySelectorAll('.slider__img');
-const arrow = document.querySelector('.arrow');
 let current = 0;
 
-arrow.addEventListener('click', () => {
+function showSlide(step) {
   slides[current].classList.remove('is-active');
-  current = (current + 1) % slides.length;
+  current = (current + step + slides.length) % slides.length;
   slides[current].classList.add('is-active');
-});
+}
+
+document.querySelector('.arrow--next').addEventListener('click', () => showSlide(1));
+document.querySelector('.arrow--prev').addEventListener('click', () => showSlide(-1));
 
 // Бургер-меню на узких экранах
 const burger = document.querySelector('.nav__burger');
