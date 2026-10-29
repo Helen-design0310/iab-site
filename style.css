@@ -50,10 +50,10 @@ a { color: inherit; }
   grid-template-columns: 1fr 1fr;
   grid-template-areas:
     "nav    phone"
-    "photo  photo"
-    "arrow  arrow"
     "title  title"
     "offer  offer"
+    "photo  photo"
+    "arrow  arrow"
     "logo   logo";
   align-items: start;
 }
