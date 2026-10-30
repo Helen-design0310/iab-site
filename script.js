@@ -6,11 +6,12 @@
   const MAX_TIME = 5000;
   const started = performance.now();
 
-  const firstImg = document.querySelector('.slider__img');
+  // Видео считается готовым, когда загружены первые кадры (или по таймауту)
+  const video = document.querySelector('.slider__video');
   const imgReady = new Promise((resolve) => {
-    if (!firstImg || firstImg.complete) return resolve();
-    firstImg.addEventListener('load', resolve, { once: true });
-    firstImg.addEventListener('error', resolve, { once: true });
+    if (!video || video.readyState >= 3) return resolve();
+    video.addEventListener('canplay', resolve, { once: true });
+    video.addEventListener('error', resolve, { once: true });
   });
   const fontsReady = document.fonts ? document.fonts.ready : Promise.resolve();
   const minWait = new Promise((resolve) => setTimeout(resolve, MIN_TIME));
@@ -37,18 +38,12 @@
   Promise.race([Promise.all([imgReady, fontsReady, minWait]), maxWait]).then(leave);
 })();
 
-// Слайдер: стрелка переключает фото по кругу
-const slides = document.querySelectorAll('.slider__img');
-let current = 0;
-
-function showSlide(step) {
-  slides[current].classList.remove('is-active');
-  current = (current + step + slides.length) % slides.length;
-  slides[current].classList.add('is-active');
+// Видео: при включённом «уменьшить анимацию» не проигрываем
+const heroVideo = document.querySelector('.slider__video');
+if (heroVideo && window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+  heroVideo.removeAttribute('autoplay');
+  heroVideo.pause();
 }
-
-document.querySelector('.arrow--next').addEventListener('click', () => showSlide(1));
-document.querySelector('.arrow--prev').addEventListener('click', () => showSlide(-1));
 
 // Бургер-меню на узких экранах
 const burger = document.querySelector('.nav__burger');

@@ -7,8 +7,9 @@
   <meta name="description" content="Дизайн и ремонт отелей, бутиков и ресторанов любой сложности и со сдачей ремонта в надзорные органы.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&family=Noto+Serif+KR:wght@400&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css?v=2">
+  <link rel="preload" href="fonts/Anticva-Regular.otf" as="font" type="font/otf" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css?v=3">
   <noscript><style>.pre { display: none; } html.is-loading { overflow: auto; }</style></noscript>
 </head>
 <body>
@@ -46,42 +47,26 @@
 
       <h1 class="hero__title">Дизайн и&nbsp;ремонт</h1>
 
-      <!-- Слайдер: пропорции 5:7 как у серого прямоугольника в макете -->
-      <div class="slider" aria-roledescription="карусель" aria-label="Наши работы">
-        <img class="slider__img is-active" src="img/work-1.jpg" width="411" height="500" alt="Ресторан с высокими окнами и мягкими креслами">
-        <img class="slider__img" src="img/work-2.jpg" width="416" height="501" alt="Арт-инсталляция с глазом и сухоцветами" loading="lazy">
-        <img class="slider__img" src="img/work-3.jpg" width="410" height="500" alt="Зал ресторана со светлой мебелью и подвесной скульптурой" loading="lazy">
-        <img class="slider__img" src="img/work-4.jpg" width="412" height="496" alt="Длинный деревянный стол у каменного камина" loading="lazy">
-        <img class="slider__img" src="img/work-5.jpg" width="408" height="501" alt="Бутик с лестницей и рядом одежды" loading="lazy">
-
-        <button class="arrow arrow--prev" type="button" aria-label="Предыдущее фото">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-            <path d="M20 12H4M10 6l-6 6 6 6"/>
-          </svg>
-        </button>
-        <button class="arrow arrow--next" type="button" aria-label="Следующее фото">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-            <path d="M4 12h16M14 6l6 6-6 6"/>
-          </svg>
-        </button>
+      <!-- Видео вместо фото: пропорции 5:7 как у серого прямоугольника в макете -->
+      <div class="slider">
+        <video class="slider__video" src="video/hero.mp4" width="1080" height="1316" autoplay muted loop playsinline preload="auto" aria-label="Интерьер ресторана"></video>
       </div>
 
       <div class="offer">
         <p class="offer__subtitle">отелей, бутиков<br>и ресторанов</p>
         <p class="offer__text">любой сложности и&nbsp;со&nbsp;сдачей<br>ремонта в&nbsp;надзорные органы</p>
         <div class="offer__buttons">
-          <a class="btn btn--dark" href="#project">Обсудить проект</a>
-          <a class="btn btn--line" href="#estimate">Вызвать сметчика</a>
+          <a class="btn btn--dark" href="#contact">Связаться</a>
         </div>
       </div>
 
       <div class="logo">
-        <img src="img/logo.png" width="229" height="51" alt="ИАБ — интерьер атмосферного бизнеса">
+        <img src="img/logo-white.png" width="589" height="130" alt="ИАБ — интерьер атмосферного бизнеса">
       </div>
 
     </div>
   </header>
 
-  <script src="script.js?v=2"></script>
+  <script src="script.js?v=3"></script>
 </body>
 </html>

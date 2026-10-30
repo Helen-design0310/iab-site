@@ -1,3 +1,12 @@
+/* Шрифт заголовков */
+@font-face {
+  font-family: "Anticva";
+  src: url("fonts/Anticva-Regular.otf") format("opentype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
 /* ===== Фирменные цвета (только эти) ===== */
 :root {
   --bg-dark: #222222;
@@ -16,7 +25,7 @@
   --gap: clamp(1.25rem, 0.8rem + 1.9vw, 2.5rem);
   --pad-card: clamp(1.25rem, 1rem + 1vw, 2.5rem);
 
-  --font-head: "Noto Serif KR", Georgia, "Times New Roman", serif;
+  --font-head: "Anticva", Georgia, "Times New Roman", serif;
   --font-body: "Inter", system-ui, sans-serif;
 }
 
@@ -37,13 +46,20 @@ img { display: block; max-width: 100%; }
 a { color: inherit; }
 
 /* ===== Первый экран: высота по содержимому ===== */
+/* Телефон: фон тёмный, светлый текст. На планшете и десктопе тёмная левая половина */
 .hero {
-  max-width: 2400px;
-  margin: 0 auto;
-  padding: var(--gap) var(--gutter);
+  position: relative;
+  padding-block: var(--gap);
+  background: var(--bg-dark);
+  color: var(--bg-light);
 }
 
 .hero__inner {
+  position: relative;
+  z-index: 1;
+  max-width: 2400px;
+  margin: 0 auto;
+  padding-inline: var(--gutter);
   display: grid;
   gap: var(--gap);
   /* Телефон: одна колонка */
@@ -80,6 +96,9 @@ a { color: inherit; }
 
 .nav__list a:hover { color: var(--text-muted); }
 
+/* Выпадающий список всегда на светлом фоне */
+.nav__list { color: var(--text); }
+
 /* Бургер (узкие экраны) */
 .nav__burger {
   display: flex;
@@ -90,9 +109,9 @@ a { color: inherit; }
   height: 3rem;
   padding: 0 0.75rem;
   background: none;
-  border: 1px solid var(--bg-dark);
+  border: 1px solid var(--bg-light);
   cursor: pointer;
-  color: var(--text);
+  color: var(--bg-light);
 }
 
 .nav__burger span {
@@ -143,7 +162,7 @@ a { color: inherit; }
   line-height: 1.05;
 }
 
-/* ===== Слайдер: пропорция 5:7, картинки не искажаются ===== */
+/* ===== Видео: пропорция 5:7, не сжимается и не растягивается ===== */
 .slider {
   position: relative;
   width: 100%;
@@ -154,47 +173,18 @@ a { color: inherit; }
   background: var(--text-muted);
 }
 
-.slider__img {
+.slider__video {
   position: absolute;
   inset: 0;
   width: 100%;
   height: 100%;
   object-fit: cover;
-  opacity: 0;
-  transition: opacity 0.4s ease;
 }
 
-.slider__img.is-active { opacity: 1; }
-
-/* ===== Стрелки внутри фото: левая у левого края, правая у правого ===== */
-.arrow {
-  position: absolute;
-  top: 50%;
-  z-index: 1;
-  display: grid;
-  place-items: center;
-  width: 2.75rem;
-  height: 2.75rem;
-  margin-top: -1.375rem;
-  padding: 0;
-  background: var(--bg-light);
-  color: var(--text);
-  border: 1px solid var(--bg-dark);
-  border-radius: 50%;
-  cursor: pointer;
-  transition: background-color 0.2s ease, color 0.2s ease;
-}
-
-.arrow--prev { left: 0.75rem; }
-.arrow--next { right: 0.75rem; }
-
-.arrow:hover { background: var(--bg-dark); color: var(--bg-light); }
-
-.arrow:focus-visible,
 .nav__burger:focus-visible,
 .btn:focus-visible,
 .nav__list a:focus-visible {
-  outline: 2px solid var(--bg-dark);
+  outline: 2px solid var(--bg-light);
   outline-offset: 3px;
 }
 
@@ -204,13 +194,14 @@ a { color: inherit; }
   font-family: var(--font-head);
   font-size: var(--fs-sub);
   line-height: 1.2;
+  text-transform: uppercase; /* капс по макету */
 }
 
 .offer__text {
   /* Одинаковый отступ сверху и снизу: текст по центру между подзаголовком и кнопками */
   margin: clamp(1rem, 0.7rem + 1vw, 1.75rem) 0;
   max-width: 65ch;
-  color: var(--text-muted);
+  color: var(--bg-light);
   font-size: var(--fs-small);
   line-height: 1.3;
 }
@@ -227,24 +218,34 @@ a { color: inherit; }
   justify-content: center;
   min-height: 3rem;
   padding: 0.5rem clamp(1.25rem, 1rem + 1vw, 2.5rem);
-  border: 1px solid var(--bg-dark);
-  font-size: var(--fs-small);
-  font-weight: 500;
+  border: 1px solid var(--bg-light);
+  font-size: var(--fs-text);
+  font-weight: 400;
   text-decoration: none;
   text-align: center;
   transition: background-color 0.2s ease, color 0.2s ease;
 }
 
-.btn--dark { background: var(--bg-dark); color: var(--bg-light); }
-.btn--dark:hover { background: var(--text-muted); border-color: var(--text-muted); }
-.btn--line { background: transparent; color: var(--text); }
-.btn--line:hover { background: var(--bg-dark); color: var(--bg-light); }
+/* На тёмном фоне кнопка светлая, на светлом (десктоп) тёмная */
+.btn--dark { background: var(--bg-light); color: var(--text); }
+.btn--dark:hover { background: transparent; color: var(--bg-light); }
 
 /* ===== Логотип ===== */
 .logo img { width: clamp(11rem, 9.5rem + 3vw, 17rem); height: auto; }
 
 /* ===== Планшет: текст слева, фото справа ===== */
 @media (min-width: 768px) {
+  /* Левая половина тёмная, правая светлая */
+  .hero { background: var(--bg-light); color: var(--text); }
+  .hero::before {
+    content: "";
+    position: absolute;
+    inset: 0 50% 0 0;
+    background: var(--bg-dark);
+  }
+  .hero__inner { color: var(--bg-light); }
+  .hero__phone { color: var(--text); }
+
   .hero__inner {
     grid-template-areas:
       "nav   phone"
@@ -294,6 +295,17 @@ a { color: inherit; }
   }
 
   .nav__list a { min-height: 0; padding: 0; }
+  .nav__list { color: var(--bg-light); }
+  .nav__list a:hover { color: var(--bg-light); opacity: 0.7; }
+
+  /* Правая часть на светлом фоне: тёмный текст, тёмная кнопка */
+  .offer { color: var(--text); }
+  .offer__text { color: var(--text-muted); }
+  .btn { border-color: var(--bg-dark); }
+  .btn--dark { background: var(--bg-dark); color: var(--bg-light); }
+  .btn--dark:hover { background: var(--text-muted); border-color: var(--text-muted); color: var(--bg-light); }
+
+  .btn:focus-visible { outline-color: var(--bg-dark); }
 
   .slider { width: 100%; align-self: start; }
 
