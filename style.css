@@ -9,9 +9,9 @@
 
 /* ===== Фирменные цвета (только эти) ===== */
 :root {
-  --bg-dark: #222222;
-  --bg-light: #FFF8F3;
-  --text: #222222;
+  --bg-dark: #2F2E14;
+  --bg-light: #F1EAE5;
+  --text: #2F2E14;
   --text-muted: #6B6B6B;
 
   /* Размеры текста: точки 375 → 1440 → 2560, в формуле есть rem */
@@ -19,6 +19,11 @@
   --fs-sub: clamp(1.25rem, 1.074rem + 0.751vw, 2.25rem);
   --fs-text: clamp(1rem, 0.956rem + 0.188vw, 1.25rem);
   --fs-small: clamp(0.875rem, 0.853rem + 0.094vw, 1rem);
+  /* Размеры по макету: плашки 14, основной текст 16, кнопки 18 */
+  --fs-tag: 0.875rem;
+  --fs-body: 1rem;
+  --fs-btn: 1.125rem;
+  --fs-h2: clamp(1.625rem, 1.317rem + 1.314vw, 3.5rem);
 
   /* Отступы */
   --gutter: clamp(1.25rem, 0.606rem + 2.746vw, 5rem);
@@ -27,11 +32,25 @@
 
   --font-head: "Anticva", Georgia, "Times New Roman", serif;
   --font-body: "Inter", system-ui, sans-serif;
+
+  /* Размер значка логотипа; бургер равен ему по высоте */
+  --icon-size: clamp(1.75rem, 1.4rem + 1vw, 2.5rem);
+
+  /* Вырез «ушками» по бокам кнопки */
+  --btn-notch: polygon(
+    0 0, 100% 0,
+    calc(100% - 6px) 25%, calc(100% - 10px) 50%, calc(100% - 6px) 75%,
+    100% 100%, 0 100%,
+    6px 75%, 10px 50%, 6px 25%
+  );
 }
 
 *, *::before, *::after { box-sizing: border-box; }
 
-html { -webkit-text-size-adjust: 100%; }
+html {
+  -webkit-text-size-adjust: 100%;
+  scrollbar-gutter: stable; /* место под полосу прокрутки зарезервировано: ширина не прыгает после заставки */
+}
 
 body {
   margin: 0;
@@ -45,11 +64,49 @@ body {
 img { display: block; max-width: 100%; }
 a { color: inherit; }
 
+/* ===== Закреплённая шапка ===== */
+/* Цвета элементов зависят от фона под шапкой: слева и справа отдельно */
+.site-header {
+  --hd-top: var(--gap);
+  --hd-l: var(--bg-light);
+  --hd-r: var(--bg-light);
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 50;
+  padding-top: var(--hd-top);
+  pointer-events: none; /* клики проходят сквозь пустые места шапки */
+  /* Телефон: на шапке сплошной фон, чтобы под ней не просвечивали фото и текст */
+  background: var(--bg-dark);
+  padding-bottom: calc(var(--gap) * 0.5);
+  transition: background-color 0.3s ease;
+}
+
+.site-header__inner {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  max-width: 2400px;
+  margin: 0 auto;
+  padding-inline: var(--gutter);
+}
+
+.site-header .nav,
+.site-header .hero__phone { pointer-events: auto; }
+
+/* Над светлым блоком всё оливковое */
+.site-header.is-on-light { --hd-l: var(--text); --hd-r: var(--text); background: var(--bg-light); }
+
+.nav { position: relative; color: var(--hd-l); transition: color 0.3s ease; }
+.hero__phone { color: var(--hd-r); transition: color 0.3s ease; }
+
 /* ===== Первый экран: высота по содержимому ===== */
 /* Телефон: фон тёмный, светлый текст. На планшете и десктопе тёмная левая половина */
 .hero {
   position: relative;
-  padding-block: var(--gap);
+  padding-top: calc(var(--gap) + 2.75rem + var(--gap)); /* место под шапку */
+  padding-bottom: var(--gap);
   background: var(--bg-dark);
   color: var(--bg-light);
 }
@@ -62,79 +119,105 @@ a { color: inherit; }
   padding-inline: var(--gutter);
   display: grid;
   gap: var(--gap);
-  /* Телефон: одна колонка */
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1fr;
   grid-template-areas:
-    "nav    phone"
-    "title  title"
-    "offer  offer"
-    "photo  photo"
-    "logo   logo";
+    "title"
+    "offer"
+    "photo";
   align-items: start;
 }
 
-.nav    { grid-area: nav; position: relative; z-index: 2; }
-.hero__phone { grid-area: phone; }
 .slider { grid-area: photo; }
 .hero__title { grid-area: title; }
 .offer  { grid-area: offer; }
-.logo   { grid-area: logo; }
 
-/* ===== Меню ===== */
-.nav__list {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  font-size: var(--fs-small);
-  line-height: 1.6;
+/* ===== Верхняя полоса: бургер и логотип ===== */
+.nav__bar {
+  display: flex;
+  align-items: center;
+  gap: clamp(0.75rem, 0.5rem + 1vw, 1.5rem);
 }
 
-.nav__list a {
-  display: inline-block;
-  text-decoration: none;
-}
-
-.nav__list a:hover { color: var(--text-muted); }
-
-/* Выпадающий список всегда на светлом фоне */
-.nav__list { color: var(--text); }
-
-/* Бургер (узкие экраны) */
 .nav__burger {
+  flex: none;
   display: flex;
   flex-direction: column;
+  align-items: flex-start;
   justify-content: center;
-  gap: 6px;
-  width: 3rem;
-  height: 3rem;
-  padding: 0 0.75rem;
+  /* Три полоски по ширине значка логотипа, невысокие */
+  gap: calc(var(--icon-size) * 0.25);
+  width: var(--icon-size);
+  min-height: 2.75rem;
+  padding: 0;
   background: none;
-  border: 1px solid var(--bg-light);
+  border: 0;
   cursor: pointer;
-  color: var(--bg-light);
+  color: inherit;
 }
 
+/* Три одинаковые полоски */
 .nav__burger span {
   display: block;
+  width: 100%;
   height: 1.5px;
   background: currentColor;
+  transform-origin: center;
   transition: transform 0.25s ease, opacity 0.25s ease;
 }
 
-.nav__burger[aria-expanded="true"] span:nth-child(1) { transform: translateY(7.5px) rotate(45deg); }
+.nav__burger[aria-expanded="true"] span:nth-child(1) { transform: translateY(calc(var(--icon-size) * 0.25 + 1.5px)) rotate(45deg); }
 .nav__burger[aria-expanded="true"] span:nth-child(2) { opacity: 0; }
-.nav__burger[aria-expanded="true"] span:nth-child(3) { transform: translateY(-7.5px) rotate(-45deg); }
+.nav__burger[aria-expanded="true"] span:nth-child(3) { transform: translateY(calc(var(--icon-size) * -0.25 - 1.5px)) rotate(-45deg); }
 
-/* Выпадающий список меню */
+/* Логотип: значок и название */
+.logo {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  text-decoration: none;
+  font-family: var(--font-head);
+  font-size: clamp(1.15rem, 1.1rem + 0.22vw, 1.45rem);
+  letter-spacing: 0.04em;
+  line-height: 1;
+}
+
+/* Значок: две картинки (светлая и оливковая), перекрёстно меняются вместе с цветом шапки */
+.logo__icon {
+  position: relative;
+  flex: none;
+  width: var(--icon-size);
+  aspect-ratio: 452 / 463;
+}
+
+.logo__icon img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  transition: opacity 0.3s ease;
+}
+
+.logo__icon .logo__icon-dark { opacity: 0; }
+.is-on-light .logo__icon .logo__icon-light { opacity: 0; }
+.is-on-light .logo__icon .logo__icon-dark { opacity: 1; }
+
+/* Заглавные Anticva стоят выше центра строки: опускаем надпись к центру значка */
+.logo__name { transform: translateY(0.09em); }
+
+/* Выпадающий список меню на светлом фоне */
 .nav__list {
   position: absolute;
   top: calc(100% + 0.5rem);
   left: 0;
   min-width: 14rem;
+  margin: 0;
   padding: var(--pad-card);
+  list-style: none;
   background: var(--bg-light);
+  color: var(--text);
   border: 1px solid var(--bg-dark);
-  font-size: var(--fs-text);
+  font-size: var(--fs-body);
+  line-height: 1.6;
   visibility: hidden;
   opacity: 0;
   transition: opacity 0.2s ease, visibility 0.2s ease;
@@ -142,28 +225,47 @@ a { color: inherit; }
 
 .nav__list.is-open { visibility: visible; opacity: 1; }
 
-.nav__list a { padding: 0.5rem 0; min-height: 44px; }
+.nav__list a {
+  display: inline-block;
+  min-height: 44px;
+  padding: 0.5rem 0;
+  text-decoration: none;
+}
+
+.nav__list a:hover { color: var(--text-muted); }
 
 /* ===== Телефон ===== */
 .hero__phone {
-  justify-self: end;
-  align-self: center;
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
   min-height: 2.75rem;
-  font-size: var(--fs-small);
+  font-size: var(--fs-body);
   text-decoration: none;
   white-space: nowrap;
 }
 
-/* Иконка телефона: маска из png, цвет берётся от текста */
+/* Иконка: круг с трубкой (png). На тёмном фоне телефона добавлено тонкое светлое кольцо */
 .hero__phone-icon {
-  width: 1.125rem;
-  height: 1.125rem;
-  background: currentColor;
-  -webkit-mask: url("img/phone.png") center / contain no-repeat;
-  mask: url("img/phone.png") center / contain no-repeat;
+  flex: none;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 50%;
+  background: url("img/phone-icon.png") center / contain no-repeat;
+  box-shadow: 0 0 0 1px currentColor; /* кольцо цвета текста: на тёмном фоне светлое, на светлом сливается с кругом */
+}
+
+/* На самых узких телефонах номер не помещается рядом с логотипом: остаётся иконка-ссылка */
+@media (max-width: 479px) {
+  .hero__phone { min-width: 2.75rem; justify-content: center; }
+  .hero__phone-text {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
 }
 
 /* ===== Заголовок ===== */
@@ -175,7 +277,7 @@ a { color: inherit; }
   line-height: 1.05;
 }
 
-/* ===== Видео: пропорция 5:7, не сжимается и не растягивается ===== */
+/* ===== Фото: пропорция 5:7, не сжимается и не растягивается ===== */
 .slider {
   position: relative;
   width: 100%;
@@ -186,7 +288,7 @@ a { color: inherit; }
   background: var(--text-muted);
 }
 
-.slider__video {
+.slider img {
   position: absolute;
   inset: 0;
   width: 100%;
@@ -196,7 +298,8 @@ a { color: inherit; }
 
 .nav__burger:focus-visible,
 .btn:focus-visible,
-.nav__list a:focus-visible {
+.nav__list a:focus-visible,
+.logo:focus-visible {
   outline: 2px solid var(--bg-light);
   outline-offset: 3px;
 }
@@ -215,8 +318,8 @@ a { color: inherit; }
   margin: clamp(1rem, 0.7rem + 1vw, 1.75rem) 0;
   max-width: 65ch;
   color: var(--bg-light);
-  font-size: var(--fs-small);
-  line-height: 1.3;
+  font-size: var(--fs-body);
+  line-height: 1.2;
 }
 
 .offer__buttons {
@@ -231,20 +334,18 @@ a { color: inherit; }
   justify-content: center;
   min-height: 3rem;
   padding: 0.5rem clamp(1.25rem, 1rem + 1vw, 2.5rem);
-  border: 1px solid var(--bg-light);
-  font-size: var(--fs-text);
+  border: 0;
+  clip-path: var(--btn-notch);
+  font-size: var(--fs-btn);
   font-weight: 400;
   text-decoration: none;
   text-align: center;
   transition: background-color 0.2s ease, color 0.2s ease;
 }
 
-/* На тёмном фоне кнопка светлая, на светлом (десктоп) тёмная */
+/* На тёмном фоне кнопка светлая, на светлом (планшет, десктоп) тёмная */
 .btn--dark { background: var(--bg-light); color: var(--text); }
-.btn--dark:hover { background: transparent; color: var(--bg-light); }
-
-/* ===== Логотип ===== */
-.logo img { width: clamp(11rem, 9.5rem + 3vw, 17rem); height: auto; }
+.btn--dark:hover { background: var(--text-muted); color: var(--bg-light); }
 
 /* ===== Планшет: текст слева, фото справа ===== */
 @media (min-width: 768px) {
@@ -257,16 +358,18 @@ a { color: inherit; }
     background: var(--bg-dark);
   }
   .hero__inner { color: var(--bg-light); }
-  .hero__phone { color: var(--text); }
 
   .hero__inner {
+    grid-template-columns: 1fr 1fr;
     grid-template-areas:
-      "nav   phone"
       "title photo"
-      "offer photo"
-      "logo  photo";
+      "offer photo";
     align-items: start;
   }
+
+  /* Телефон справа над светлой половиной */
+  .site-header { --hd-r: var(--text); background: none; padding-bottom: 0; }
+  .site-header.is-on-light { background: none; }
 
   .slider { justify-self: stretch; max-width: none; }
 
@@ -274,67 +377,58 @@ a { color: inherit; }
   .offer { display: grid; width: max-content; max-width: 100%; }
   .offer__text { width: 0; min-width: 100%; white-space: nowrap; }
   .offer__buttons .btn { width: 100%; }
-  .offer__buttons { flex-direction: row; flex-wrap: wrap; }
 }
 
-/* ===== Десктоп: три колонки, меню списком ===== */
+/* ===== Десктоп: три колонки ===== */
 @media (min-width: 1100px) {
   .hero {
-    /* Ширина фото; высота = 1.4 ширины, отступы сверху и снизу ≈ 5% высоты экрана */
     /* Фото целиком влезает по высоте экрана: 100vh минус отступы 40px сверху и снизу */
     --pad-y: 2.5rem;
     --photo-w: min(36vw, calc((100vh - 2 * var(--pad-y)) * 0.714), 52rem);
     padding-block: var(--pad-y);
   }
 
+  .site-header { --hd-top: 2.5rem; }
+
   .hero__inner {
     /* Центральная колонка = ширина фото */
     grid-template-columns: 1fr var(--photo-w) 1fr;
     grid-template-rows: auto 1fr auto;
     grid-template-areas:
-      "nav   photo phone"
-      "title photo ."
-      "logo  photo offer";
+      ".     photo ."
+      ".     photo ."
+      ".     photo offer";
     column-gap: 1rem; /* заголовок рядом с фото: 16px */
     align-items: stretch;
   }
 
-  .nav__burger { display: none; }
-
-  .nav__list {
-    position: static;
-    min-width: 0;
-    padding: 0;
-    background: none;
-    border: 0;
-    font-size: var(--fs-small);
-    visibility: visible;
-    opacity: 1;
-  }
-
-  .nav__list a { min-height: 0; padding: 0; }
-  .nav__list { color: var(--bg-light); }
-  .nav__list a:hover { color: var(--bg-light); opacity: 0.7; }
-
-  /* Правая часть на светлом фоне: тёмный текст, тёмная кнопка */
-  .offer { color: var(--text); }
-  .offer__text { color: var(--text-muted); }
-  .btn { border-color: var(--bg-dark); }
-  .btn--dark { background: var(--bg-dark); color: var(--bg-light); }
-  .btn--dark:hover { background: var(--text-muted); border-color: var(--text-muted); color: var(--bg-light); }
-
-  .btn:focus-visible { outline-color: var(--bg-dark); }
-
   .slider { width: 100%; align-self: start; }
 
-  /* H1 прижат к фото слева */
-  .hero__title { align-self: center; justify-self: end; }
-  .hero__phone { align-self: start; }
-  .logo  { align-self: end; }
-  .offer { align-self: end; margin-left: clamp(1rem, 0.4rem + 1.6vw, 3rem); }
-  /* Кнопки в один ряд */
-  .offer__buttons { flex-wrap: nowrap; }
-  .btn { padding-inline: clamp(0.75rem, 0.4rem + 1vw, 2rem); white-space: nowrap; }
+  /* H1 у левого края */
+  /* Заголовок на всю высоту первой колонки: центр совпадает с центром фото */
+  .hero__title { grid-area: 1 / 1 / -1 / 2; align-self: center; justify-self: start; }
+  .hero__phone { font-size: var(--fs-body); }
+
+  /* Правая часть на светлом фоне: тёмный текст, тёмная кнопка */
+  /* Блок с подзаголовком, текстом и кнопкой у правого края */
+  .offer { align-self: end; justify-self: end; color: var(--text); }
+  .offer__text { color: var(--text-muted); }
+  .btn { white-space: nowrap; }
+  /* Кнопка из png-полосы: края с «ушками» не растягиваются, середина тянется */
+  .offer__buttons .btn--dark {
+    background: none;
+    color: var(--bg-light);
+    clip-path: none;
+    border-style: solid;
+    border-width: 0 12px;
+    border-image: url("img/btn.png") 0 12 fill / 0 12px stretch;
+    padding-inline: 0;
+    /* Шире подзаголовка: «ушки» выходят за линию выравнивания текста */
+    width: calc(100% + 24px);
+    margin-inline: -12px;
+  }
+  .btn--dark:hover { opacity: 0.85; }
+  .btn:focus-visible { outline-color: var(--bg-dark); }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -391,7 +485,7 @@ html.is-loading { overflow: hidden; }
 }
 
 .pre__logo {
-  width: 55%;
+  width: 50%;
   height: auto;
 }
 
@@ -426,3 +520,159 @@ html.is-loading { overflow: hidden; }
   .pre.is-leaving { opacity: 0; }
   .pre.is-opening { background: var(--bg-light); }
 }
+
+/* ===== Реализованные проекты ===== */
+
+.projects {
+  --card-w: clamp(17.5rem, 6.25rem + 9.84vw, 22rem);
+  position: relative;
+  z-index: 1;
+  padding-block: clamp(3.75rem, 2rem + 6vw, 10rem);
+  background: var(--bg-light);
+  color: var(--text);
+}
+
+.projects__title {
+  margin: 0 0 clamp(2rem, 1rem + 3vw, 4.5rem);
+  padding-inline: var(--gutter);
+  font-family: var(--font-head);
+  font-weight: 400;
+  font-size: var(--fs-h2);
+  line-height: 1.1;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+/* Горизонтальная лента карточек: листается пальцем, колесом и мышью */
+.projects__track {
+  display: flex;
+  gap: clamp(0.75rem, 0.4rem + 0.9vw, 1.5rem);
+  padding-inline: var(--gutter);
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scroll-padding-inline: var(--gutter);
+  overscroll-behavior-x: contain;
+  scrollbar-width: none;
+  cursor: grab;
+}
+
+.projects__track::-webkit-scrollbar { display: none; }
+.projects__track.is-dragging { cursor: grabbing; scroll-snap-type: none; }
+.projects__track:focus-visible { outline: 2px solid var(--bg-dark); outline-offset: 4px; }
+
+.project {
+  flex: none;
+  width: var(--card-w);
+  scroll-snap-align: start;
+}
+
+.project__photo {
+  position: relative;
+  aspect-ratio: 1091 / 1430;
+  overflow: hidden;
+  background: var(--text-muted);
+}
+
+.project__photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  -webkit-user-drag: none;
+  user-select: none;
+}
+
+/* Плашка с типом проекта */
+.project__tag {
+  position: absolute;
+  top: clamp(0.75rem, 0.6rem + 0.5vw, 1.25rem);
+  left: clamp(0.75rem, 0.6rem + 0.5vw, 1.25rem);
+  padding: 0.375rem 0.75rem;
+  background: rgb(47 46 20 / 0.6);
+  color: var(--bg-light);
+  font-size: var(--fs-tag);
+  line-height: 1.3;
+}
+
+.project__info {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-top: 0.75rem;
+}
+
+.project__facts {
+  margin: 0;
+  font-size: var(--fs-body);
+  line-height: 1.3;
+  white-space: nowrap;
+}
+
+.project__facts b { font-weight: 500; }
+
+.project__link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  min-height: 2.75rem;
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.4em;
+  font-size: var(--fs-body);
+  line-height: 1.3;
+  white-space: nowrap;
+}
+
+.project__link:hover { color: var(--text-muted); }
+.project__link:focus-visible { outline: 2px solid var(--bg-dark); outline-offset: 3px; }
+
+/* ===== Сцена с анимацией (десктоп) ===== */
+/* Класс is-stage ставит скрипт: широкий и достаточно высокий экран, анимация не отключена.
+   Фото первого экрана уменьшается и встаёт первой карточкой, остальные подъезжают справа,
+   тёмная половина уезжает влево. Значения задаёт скрипт по положению прокрутки. */
+.is-stage .stage { height: calc(100vh + 110vh); }
+
+.is-stage .stage__pin {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.is-stage .hero { height: 100%; }
+.is-stage .hero__inner { height: 100%; }
+
+.is-stage .hero::before { transform: translateX(var(--dark-x, 0)); will-change: transform; }
+.is-stage .hero__title,
+.is-stage .offer { will-change: transform, opacity; }
+
+/* Фото первого экрана свободно перемещается по сцене */
+.is-stage .slider {
+  position: absolute;
+  z-index: 3;
+  max-width: none;
+  will-change: left, top, width, height;
+}
+
+.is-stage .projects {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding-block: 5.5rem 2.5rem;
+  background: transparent;
+  pointer-events: none;
+}
+
+.is-stage .projects.is-done { pointer-events: auto; }
+.is-stage .projects__title { will-change: opacity; margin-bottom: clamp(1.5rem, 0.5rem + 3vw, 3.5rem); }
+.is-stage .projects__track { overflow-x: hidden; }
+.is-stage .projects.is-done .projects__track { overflow-x: auto; }
+.is-stage .project { will-change: transform, opacity; }
+
+/* Первая карточка до конца анимации: вместо неё едет фото первого экрана */
+.is-stage .project:first-child .project__photo { background: transparent; }
+.is-stage .project:first-child .project__photo img { opacity: 0; }
+.is-stage .projects.is-done .project:first-child .project__photo img { opacity: 1; }
